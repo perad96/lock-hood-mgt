@@ -29,7 +29,7 @@ Coded by www.creative-tim.com
     <link href="{{asset('theme/css/bootstrap.min.css')}}" rel="stylesheet" />
     <link href="{{asset('theme/css/paper-dashboard.css')}}?v=2.0.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="{{asset('theme/demo/demo.css')}}" rel="stylesheet" />
+{{--    <link href="{{asset('theme/demo/demo.css')}}" rel="stylesheet" />--}}
     <!-- Toastr -->
     <link rel="stylesheet" href="{{asset('theme/vendor/toastr/css/toastr.min.css')}}">
     <link rel="stylesheet" href="{{asset('theme/vendor/full_calender/lib/main.min.css')}}">

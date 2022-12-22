@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\RawMaterialsExport;
 use App\Http\Controllers\Controller;
 use App\Models\RawMaterial;
 use App\Services\UtilityService;
 use App\Traits\Messages;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RawMaterialsController extends Controller
 {
@@ -167,6 +168,19 @@ class RawMaterialsController extends Controller
             $this->resources['common_msg'] = $this->successWithMessage('Material deleted successfully!');
             return redirect()->back()->with($this->resources);
         }catch (\Exception $e){
+            $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
+            return redirect()->back()->with($this->resources);
+        }
+    }
+
+    public function export(Request $request)
+    {
+        try {
+            $allArr = RawMaterial::with('brand', 'category', 'unit')->get();
+
+            return Excel::download(new RawMaterialsExport($allArr), 'raw_materials.xlsx');
+
+        } catch (\Exception $e) {
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
         }

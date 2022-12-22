@@ -8,11 +8,14 @@
         <a href="{{url('admin/raw-materials/add')}}" class="btn btn-primary">+ New Raw Material</a>
         <div class="row">
             <div class="col-md-12">
-                <div class="card ">
-                    <div class="card-header ">
-                        <h5 class="card-title">Raw Materials List</h5>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title d-flex align-items-center mt-0">
+                            <span class="">Raw Materials List</span>
+                            <a href="{{url('admin/raw-materials/export')}}" class="btn btn-warning ml-auto m-0"><i class="fa fa-file-excel-o mr-2"></i>Export</a>
+                        </h5>
                     </div>
-                    <div class="card-body ">
+                    <div class="card-body">
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -40,7 +43,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer ">
+                    <div class="card-footer">
                         <hr>
                         <div class="row justify-content-center mt-5">
                             {{ $allArr->appends($data)->links() }}
