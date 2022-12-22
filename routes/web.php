@@ -42,6 +42,7 @@ Route::group(['middleware' => ['role:ADMIN']], function () {
             Route::get('delete/{id}', [\App\Http\Controllers\Admin\RawMaterialsController::class,'delete']);
             Route::get('info/{id}', [\App\Http\Controllers\Admin\RawMaterialsController::class,'infoView']);
             Route::get('all', [\App\Http\Controllers\Admin\RawMaterialsController::class,'allView']);
+            Route::get('export', [\App\Http\Controllers\Admin\RawMaterialsController::class,'export']);
         });
 
         Route::get('', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
