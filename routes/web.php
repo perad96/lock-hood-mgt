@@ -45,6 +45,17 @@ Route::group(['middleware' => ['role:ADMIN']], function () {
             Route::get('export', [\App\Http\Controllers\Admin\RawMaterialsController::class,'export']);
         });
 
+        // Manage employees.
+        Route::prefix('employees')->group(function () {
+            Route::post('add', [\App\Http\Controllers\Admin\EmployeesController::class,'add'])->name('employee-add');
+            Route::post('update', [\App\Http\Controllers\Admin\EmployeesController::class,'update'])->name('employee-update');
+            Route::get('add', [\App\Http\Controllers\Admin\EmployeesController::class,'addView']);
+            Route::get('delete/{id}', [\App\Http\Controllers\Admin\EmployeesController::class,'delete']);
+            Route::get('info/{id}', [\App\Http\Controllers\Admin\EmployeesController::class,'infoView']);
+            Route::get('all', [\App\Http\Controllers\Admin\EmployeesController::class,'allView']);
+            Route::get('export', [\App\Http\Controllers\Admin\EmployeesController::class,'export']);
+        });
+
         Route::get('', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
     });
 });

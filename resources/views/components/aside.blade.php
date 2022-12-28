@@ -1,16 +1,6 @@
 <div class="sidebar" data-color="white" data-active-color="danger">
-    {{--    <div class="logo bg-dark">--}}
-    {{--        <a href="#" class="simple-text logo-mini">--}}
-    {{--            <div class="logo-image-small">--}}
-    {{--                <img src="{{asset('theme/img/logo-small.png')}}">--}}
-    {{--            </div>--}}
-    {{--        </a>--}}
-    {{--        <a href="#" class="simple-text logo-normal text-light">--}}
-    {{--            AAA--}}
-    {{--        </a>--}}
-    {{--    </div>--}}
     <div class="logo bg-dark p-5">
-        <a href="#">
+        <a href="{{url('/')}}">
             <img src="{{asset('theme/img/logo-white.png')}}">
         </a>
     </div>
@@ -42,12 +32,12 @@
                 {{--                        <p>Lecturers</p>--}}
                 {{--                    </a>--}}
                 {{--                </li>--}}
-                {{--                <li class="{{ (request()->is('admin/students/*'))  ? 'active' : '' }}">--}}
-                {{--                    <a href="{{url('admin/students/all')}}">--}}
-                {{--                        <i class="nc-icon nc-hat-3"></i>--}}
-                {{--                        <p>Students</p>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
+                <li class="{{ (request()->is('admin/employees/*'))  ? 'active' : '' }}">
+                    <a href="{{url('admin/employees/all')}}">
+                        <i class="nc-icon nc-single-02"></i>
+                        <p>Employees</p>
+                    </a>
+                </li>
                 <li class="{{ (request()->is('admin/raw-materials/*'))  ? 'active' : '' }}">
                     <a href="{{url('admin/raw-materials/all')}}">
                         <i class="fa fa-cubes"></i>
