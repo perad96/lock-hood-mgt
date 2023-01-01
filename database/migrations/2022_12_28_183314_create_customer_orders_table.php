@@ -16,11 +16,14 @@ class CreateCustomerOrdersTable extends Migration
         Schema::create('customer_orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->string('note')->nullable();
+            $table->string('order_type', 100)->nullable();
+            $table->text('description')->nullable();
             $table->date('order_date')->nullable();
-            $table->date('deliver_date')->nullable();
+            $table->date('due_date')->nullable();
+            $table->date('delivered_date')->nullable();
             $table->double('discount_percentage')->nullable();
             $table->decimal('sub_total')->nullable();
+            $table->decimal('delivery_fee')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
 

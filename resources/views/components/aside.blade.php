@@ -14,12 +14,6 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-                {{--                <li class="{{ (request()->is('admin/batch/*')) ? 'active' : '' }}">--}}
-                {{--                    <a href="{{url('admin/batch/all')}}">--}}
-                {{--                        <i class="nc-icon nc-badge"></i>--}}
-                {{--                        <p>Batches</p>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
                 {{--                <li class="{{ (request()->is('admin/courses/*')) ? 'active' : '' }}">--}}
                 {{--                    <a href="{{url('admin/courses/all')}}">--}}
                 {{--                        <i class="nc-icon nc-trophy"></i>--}}
@@ -32,6 +26,30 @@
                 {{--                        <p>Lecturers</p>--}}
                 {{--                    </a>--}}
                 {{--                </li>--}}
+                <li class="{{ (request()->is('admin/customer-orders/*'))  ? 'active' : '' }}">
+                    <a href="{{url('admin/customer-orders/all')}}">
+                        <i class="nc-icon nc-single-copy-04"></i>
+                        <p>Customer Orders</p>
+                    </a>
+                </li>
+                <li class="{{ (request()->is('admin/customers/*'))  ? 'active' : '' }}">
+                    <a href="{{url('admin/customers/all')}}">
+                        <i class="nc-icon nc-badge"></i>
+                        <p>Customers</p>
+                    </a>
+                </li>
+                <li class="{{ (request()->is('admin/tasks/*'))  ? 'active' : '' }}">
+                    <a href="{{url('admin/tasks/all')}}">
+                        <i class="nc-icon nc-ruler-pencil"></i>
+                        <p>Tasks</p>
+                    </a>
+                </li>
+                <li class="{{ (request()->is('admin/products/*'))  ? 'active' : '' }}">
+                    <a href="{{url('admin/products/all')}}">
+                        <i class="nc-icon nc-air-baloon"></i>
+                        <p>Products</p>
+                    </a>
+                </li>
                 <li class="{{ (request()->is('admin/employees/*'))  ? 'active' : '' }}">
                     <a href="{{url('admin/employees/all')}}">
                         <i class="nc-icon nc-single-02"></i>

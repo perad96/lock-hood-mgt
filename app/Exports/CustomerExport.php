@@ -5,7 +5,7 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class EmployeeExport implements FromArray, WithHeadings
+class CustomerExport implements FromArray, WithHeadings
 {
     protected $allArr;
 
@@ -19,14 +19,12 @@ class EmployeeExport implements FromArray, WithHeadings
         $data = [];
         foreach ($this->allArr as $obj) {
             $data[] = [
+                'company_name' => (isset($obj['company_name'])) ? $obj['company_name'] : '',
                 'first_name' => (isset($obj['first_name'])) ? $obj['first_name'] : '',
                 'last_name' => (isset($obj['last_name'])) ? $obj['last_name'] : '',
-                'date_of_birth' => (isset($obj['date_of_birth'])) ? $obj['date_of_birth'] : '',
-                'email' => (isset($obj['email'])) ? $obj['email'] : '',
                 'phone' => (isset($obj['phone'])) ? $obj['phone'] : '',
-                'gender' => (isset($obj['gender'])) ? $obj['gender'] : '',
-                'section' => (isset($obj['section']['name'])) ? $obj['section']['name'] : '',
-                'job_role' => (isset($obj['jobRole']['name'])) ? $obj['jobRole']['name'] : '',
+                'mobile' => (isset($obj['mobile'])) ? $obj['mobile'] : '',
+                'email' => (isset($obj['email'])) ? $obj['email'] : ''
             ];
         }
         return $data;
@@ -35,7 +33,7 @@ class EmployeeExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
-            'First Name', 'Last Name', 'Date of Birth', 'Email', 'Phone', 'Gender', 'Section', 'Job Role'
+            'Company Name', 'First Name', 'Last Name', 'Phone', 'Mobile', 'Email'
         ];
     }
 }

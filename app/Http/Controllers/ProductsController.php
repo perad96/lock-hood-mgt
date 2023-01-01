@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TasksExport;
-use App\Models\Employee;
-use App\Models\RawMaterial;
-use App\Models\Task;
-use App\Models\TaskMaterial;
+use App\Exports\ProductsExport;
+use App\Models\Product;
 use App\Services\UtilityService;
 use App\Traits\Messages;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
-class TaskController extends Controller
+class ProductsController extends Controller
 {
     use Messages;
     protected $resources = [];
@@ -25,20 +21,17 @@ class TaskController extends Controller
     ){
         $this->utilityService = $utilityService;
 
-        $this->resources['page_title'] = 'Manage tasks';
-        $this->resources['statusArr'] = $this->utilityService->getAllTaskStatus();
+        $this->resources['page_title'] = 'Manage products';
     }
-
 
     public function allView(Request $request)
     {
         try{
             $data = $request->all();
-            $this->resources['allArr'] = Task::with('reporter', 'assignee')
-                ->orderBy('id', 'desc')->paginate(10);
+            $this->resources['allArr'] = Product::orderBy('id', 'desc')->paginate(10);
 
             $this->resources['data'] = $data;
-            return view('admin.task_list')->with($this->resources);
+            return view('admin.product_list')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -48,11 +41,7 @@ class TaskController extends Controller
     public function addView(Request $request)
     {
         try{
-            $this->resources['reporterArr'] = Employee::all();
-            $this->resources['assigneeArr'] = Employee::all();
-            $this->resources['rawMaterialsArr'] = RawMaterial::orderBy('item_name')->get();
-
-            return view('admin.task_add')->with($this->resources);
+            return view('admin.product_add')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -62,10 +51,10 @@ class TaskController extends Controller
     public function infoView(Request $request)
     {
         try{
-            $obj = Task::with('reporter', 'assignee')->find($request->id);
+            $obj = Product::find($request->id);
             if ($obj != null){
                 $this->resources['obj'] = $obj;
-                return view('admin.task_update')->with($this->resources);
+                return view('admin.product_update')->with($this->resources);
             }else{
                 return view('error_pages.404');
             }
@@ -79,46 +68,32 @@ class TaskController extends Controller
     {
         try{
             $requestParams = $request->all();
-
             $validator = Validator::make($requestParams, [
-                'reporter' => ['required'],
-                'assignee' => ['required'],
-                'description' => ['required']
+                'name' => ['required', 'string', 'max:100'],
+                'qty' => ['required', 'numeric'],
+                'min_qty_notify_level' => ['required', 'numeric'],
+                'barcode' => ['max:200', 'unique:products'],
+                'description' => ['max:1000'],
+                'unit_price' => ['required', 'numeric'],
             ], $this->messages());
 
             if (!$validator->fails()) {
 
-                DB::beginTransaction();
-                $task = Task::create([
-                    'reporter_id' => $requestParams['reporter'],
-                    'assignee_id' => $requestParams['assignee'],
+                Product::create([
+                    'name' => $requestParams['name'],
+                    'qty' => $requestParams['qty'],
+                    'min_qty_notify_level' => $requestParams['min_qty_notify_level'],
+                    'barcode' => $requestParams['barcode'],
                     'description' => $requestParams['description'],
-                    'due_date' => $requestParams['due_date'],
-                    'started_at' => $requestParams['start_date'],
-                    'finished_at' => $requestParams['end_date'],
-                    'spend_hours' => $requestParams['spend_hours'],
-                    'spend_minutes' => $requestParams['spend_minutes'],
-                    'status' => (isset($requestParams['status'])) ? $requestParams['status'] : 'PENDING'
+                    'unit_price' => $requestParams['unit_price'],
                 ]);
 
-                if (count($requestParams['raw_material']) > 0){
-                    foreach ($requestParams['raw_material'] as $key => $material){
-                        TaskMaterial::create([
-                            'task_id' => $task['id'],
-                            'material_id' => $material,
-                            'qty' => $requestParams['qty'][$key]
-                        ]);
-                    }
-                }
-
-                DB::commit();
-                $this->resources['common_msg'] = $this->successWithMessage('Task added successfully!');
+                $this->resources['common_msg'] = $this->successWithMessage('Product added successfully!');
                 return redirect()->back()->with($this->resources);
             }else{
                 return redirect()->back()->withErrors($validator)->withInput($request->all());
             }
         }catch (\Exception $e){
-            DB::rollBack();
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
         }
@@ -129,26 +104,26 @@ class TaskController extends Controller
         try{
             $requestParams = $request->all();
             $validator = Validator::make($requestParams, [
-                'reporter' => ['required'],
-                'assignee' => ['required'],
-                'description' => ['required']
+                'name' => ['required', 'string', 'max:100'],
+                'qty' => ['required', 'numeric'],
+                'min_qty_notify_level' => ['required', 'numeric'],
+                'barcode' => ['max:200'],
+                'description' => ['max:1000'],
+                'unit_price' => ['required', 'numeric'],
             ], $this->messages());
 
             if (!$validator->fails()) {
 
-                Task::find($requestParams['id'])->update([
-                    'reporter_id' => $requestParams['reporter'],
-                    'assignee_id' => $requestParams['assignee'],
+                Product::find($requestParams['id'])->update([
+                    'name' => $requestParams['name'],
+                    'qty' => $requestParams['qty'],
+                    'min_qty_notify_level' => $requestParams['min_qty_notify_level'],
+                    'barcode' => $requestParams['barcode'],
                     'description' => $requestParams['description'],
-                    'due_date' => $requestParams['due_date'],
-                    'started_at' => $requestParams['start_date'],
-                    'finished_at' => $requestParams['end_date'],
-                    'spend_hours' => $requestParams['spend_hours'],
-                    'spend_minutes' => $requestParams['spend_minutes'],
-                    'status' => (isset($requestParams['status'])) ? $requestParams['status'] : 'PENDING'
+                    'unit_price' => $requestParams['unit_price'],
                 ]);
 
-                $this->resources['common_msg'] = $this->successWithMessage('Task updated successfully!');
+                $this->resources['common_msg'] = $this->successWithMessage('Product updated successfully!');
                 return redirect()->back()->with($this->resources);
             }else{
                 return redirect()->back()->withErrors($validator)->withInput($request->all());
@@ -162,8 +137,8 @@ class TaskController extends Controller
     public function delete(Request $request)
     {
         try{
-            Task::find($request->id)->delete();
-            $this->resources['common_msg'] = $this->successWithMessage('Task deleted successfully!');
+            Product::find($request->id)->delete();
+            $this->resources['common_msg'] = $this->successWithMessage('Product deleted successfully!');
             return redirect()->back()->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
@@ -174,9 +149,9 @@ class TaskController extends Controller
     public function export(Request $request)
     {
         try {
-            $allArr = Task::all();
+            $allArr = Product::all();
 
-            return Excel::download(new TasksExport($allArr), 'tasks.xlsx');
+            return Excel::download(new ProductsExport($allArr), 'products.xlsx');
 
         } catch (\Exception $e) {
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
@@ -187,7 +162,10 @@ class TaskController extends Controller
     protected function messages()
     {
         return [
-            'description.required' => 'Please enter description.',
+            'name.required' => 'Please enter product name.',
+            'qty.number' => 'Invalid qty',
+            'min_qty_notify_level.number' => 'Invalid min qty notify level',
+            'unit_price.required' => 'Please enter unit price',
         ];
     }
 }

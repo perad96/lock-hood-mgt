@@ -8,11 +8,20 @@
             <div class="col-md-12">
                 <div class="card card-user">
                     <div class="card-header">
-                        <h5 class="card-title">Add New</h5>
+                        <h5 class="card-title">Add New Customer</h5>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{route('system-user-add')}}">
+                        <form method="post" action="{{route('customer-add')}}">
                             @csrf
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Company Name</label>
+                                        <input name="company_name" value="{{old('company_name')}}" type="text" class="form-control @error('company_name')is-invalid @enderror">
+                                        @error('company_name')<span class="small text-danger">{{ $message }}</span>@enderror
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -32,43 +41,29 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Role</label>
-                                        <select name="role" class="form-control @error('role')is-invalid @enderror">
-                                            <option value="">- Select Role -</option>
-                                            @foreach($roleArr as $role)
-                                                @if(old('role') == $role)
-                                                    <option selected value="{{$role}}">{{$role}}</option>
-                                                @else
-                                                    <option value="{{$role}}">{{$role}}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('role')<span class="small text-danger">{{ $message }}</span>@enderror
+                                        <label>Phone</label>
+                                        <input name="phone" value="{{old('phone')}}" type="tel" class="form-control @error('phone')is-invalid @enderror">
+                                        @error('phone')<span class="small text-danger">{{ $message }}</span>@enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Email</label>
-                                        <input name="email" value="{{old('email')}}" type="email" class="form-control @error('email')is-invalid @enderror">
-                                        @error('email')<span class="small text-danger">{{ $message }}</span>@enderror
+                                        <label>Mobile</label>
+                                        <input name="mobile" value="{{old('mobile')}}" type="tel" class="form-control @error('mobile')is-invalid @enderror">
+                                        @error('mobile')<span class="small text-danger">{{ $message }}</span>@enderror
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Password</label>
-                                        <input name="password" type="password" class="form-control @error('password')is-invalid @enderror">
-                                        @error('password')<span class="small text-danger">{{ $message }}</span>@enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Re-Enter Password</label>
-                                        <input name="password_confirmation" type="password" class="form-control">
+                                        <label>Email</label>
+                                        <input name="email" value="{{old('email')}}" type="text" class="form-control @error('email')is-invalid @enderror">
+                                        @error('email')<span class="small text-danger">{{ $message }}</span>@enderror
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="update ml-auto mr-auto">
                                     <button type="submit" class="btn btn-primary btn-round">Save</button>
