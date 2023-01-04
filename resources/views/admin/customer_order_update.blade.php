@@ -58,7 +58,7 @@
 
                             <div class="form-group">
                                 <label>Order Status</label>
-                                <select name="gender" class="form-control @error('gender')is-invalid @enderror">
+                                <select name="status" class="form-control @error('status')is-invalid @enderror">
                                     <option value="">- Select Order Status -</option>
                                     @foreach($statusArr as $status)
                                         <option @if($status == old('status')) selected @endif value="{{$status}}">{{$status}}</option>

@@ -49,7 +49,7 @@ class UtilityService
 
     public function getAllTaskStatus(): array
     {
-        return ['ONGOING', 'FAILED', 'HOLD', 'COMPLETED'];
+        return ['PENDING', 'ONGOING', 'FAILED', 'HOLD', 'COMPLETED'];
     }
 
     public function getAllSectionsWithJobRoles()

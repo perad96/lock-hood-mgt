@@ -16,6 +16,20 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label>Order ID</label>
+                                        <select name="order" class="form-control @error('order')is-invalid @enderror">
+                                            <option value="">- Select Order ID -</option>
+                                            @foreach($ordersArr as $order)
+                                                <option @if($order['id'] == old('order')) selected @endif value="{{$order['id']}}">#{{$order['id']}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('order')<span class="small text-danger">{{ $message }}</span>@enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label>Reporter</label>
                                         <select name="reporter" class="form-control @error('reporter')is-invalid @enderror">
                                             <option value="">- Select Reporter -</option>
@@ -132,31 +146,31 @@
         const tblTaskMaterialRows = [];
         const rawMaterialsArr = @json($rawMaterialsArr)
 
-        function addTaskMaterialRow() {
-            let html = "";
-            html += '<tr id="task_material_row_' + tblTaskMaterialRowIndex + '">';
-            html += '<td>';
-            // html += '<input name="description_' + tblTaskMaterialRowIndex + '" id="description_' + tblTaskMaterialRowIndex + '" type="text" class="form-control" required>';
-            html += '<select name="raw_material[]" id="raw_material_' + tblTaskMaterialRowIndex + '" class="form-control" required>';
-            html += '<option value="">- Select Raw Material -</option>';
+            function addTaskMaterialRow() {
+                let html = "";
+                html += '<tr id="task_material_row_' + tblTaskMaterialRowIndex + '">';
+                html += '<td>';
+                // html += '<input name="description_' + tblTaskMaterialRowIndex + '" id="description_' + tblTaskMaterialRowIndex + '" type="text" class="form-control" required>';
+                html += '<select name="raw_material[]" id="raw_material_' + tblTaskMaterialRowIndex + '" class="form-control" required>';
+                html += '<option value="">- Select Raw Material -</option>';
 
-            for (let i = 0; i < rawMaterialsArr.length; i++) {
-                html += `<option value="${rawMaterialsArr[i]['id']}">${rawMaterialsArr[i]['item_name']}</option>`;
+                for (let i = 0; i < rawMaterialsArr.length; i++) {
+                    html += `<option value="${rawMaterialsArr[i]['id']}">${rawMaterialsArr[i]['item_name']}</option>`;
+                }
+
+                html += '</select>';
+                html += '</td>';
+                html += '<td>';
+                html += '<input name="qty[]" id="qty_' + tblTaskMaterialRowIndex + '" type="number" step=".01" class="form-control" required>';
+                html += '</td>';
+                html += '<td class="text-right">'
+                html += '<button onclick="removeTaskTblRow(' + tblTaskMaterialRowIndex + ')" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>'
+                html += '</td>';
+                html += '</tr>';
+
+                $('#tblTaskMaterial').append(html);
+                tblTaskMaterialRowIndex++;
             }
-
-            html += '</select>';
-            html += '</td>';
-            html += '<td>';
-            html += '<input name="qty[]" id="qty_' + tblTaskMaterialRowIndex + '" type="number" step=".01" class="form-control" required>';
-            html += '</td>';
-            html += '<td class="text-right">'
-            html += '<button onclick="removeTaskTblRow(' + tblTaskMaterialRowIndex + ')" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>'
-            html += '</td>';
-            html += '</tr>';
-
-            $('#tblTaskMaterial').append(html);
-            tblTaskMaterialRowIndex++;
-        }
 
         function removeTaskTblRow(id) {
             const row_id = '#task_material_row_' + id;
