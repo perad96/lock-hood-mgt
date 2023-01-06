@@ -118,6 +118,7 @@ Route::prefix('util')->group(function () {
     Route::get('get-job-roles-by-section/{id}', [\App\Http\Controllers\UtilityController::class,'getJobRolesBySectionId']);
     Route::get('get-all-customers', [\App\Http\Controllers\UtilityController::class,'getAllCustomers']);
     Route::get('get-raw-material/{id}', [\App\Http\Controllers\UtilityController::class,'getRawMaterialById']);
+    Route::get('get-all-tasks-calender', [\App\Http\Controllers\UtilityController::class,'getAllTasks']);
 });
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
