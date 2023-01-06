@@ -62,6 +62,12 @@
                         <p>Raw Materials</p>
                     </a>
                 </li>
+                <li class="{{ (request()->is('admin/reports/*'))  ? 'active' : '' }}">
+                    <a href="{{url('admin/reports/all')}}">
+                        <i class="nc-icon nc-chart-bar-32"></i>
+                        <p>Reports</p>
+                    </a>
+                </li>
                 <li class="{{ (request()->is('admin/system-users/*'))  ? 'active' : '' }}">
                     <a href="{{url('admin/system-users/all')}}">
                         <i class="nc-icon nc-circle-10"></i>

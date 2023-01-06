@@ -34,6 +34,8 @@ Coded by www.creative-tim.com
     <link rel="stylesheet" href="{{asset('theme/vendor/toastr/css/toastr.min.css')}}">
     <link rel="stylesheet" href="{{asset('theme/vendor/full_calender/lib/main.min.css')}}">
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+
     <style>
         #calendar {
             max-width: 1100px;
@@ -65,6 +67,13 @@ Coded by www.creative-tim.com
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        #reportViewContent .card{
+            background-color: #005580;
+        }
+        #reportViewContent a:hover {
+            text-decoration: none !important;
+        }
     </style>
     @yield('css')
 </head>
@@ -91,6 +100,8 @@ Coded by www.creative-tim.com
 <script src="{{asset('theme/js/plugins/bootstrap-notify.js')}}"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="{{asset('theme/demo/demo.js')}}"></script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
 
 <!-- Toastr -->
 <script src="{{asset('theme/vendor/toastr/js/toastr.min.js')}}"></script>
@@ -127,6 +138,7 @@ Coded by www.creative-tim.com
 @endif
 
 @yield('js')
+
 
 </body>
 

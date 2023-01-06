@@ -16,6 +16,32 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label>Task Type</label>
+                                        <select name="type" class="form-control @error('type')is-invalid @enderror">
+                                            <option value="">- Select Task Type -</option>
+                                            @foreach($taskTypesArr as $type)
+                                                <option @if($type == old('type')) selected @endif value="{{$type}}">{{$type}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('type')<span class="small text-danger">{{ $message }}</span>@enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Order ID</label>
+                                        <select name="order" class="form-control @error('order')is-invalid @enderror">
+                                            <option value="">- Select Order ID -</option>
+                                            @foreach($ordersArr as $order)
+                                                <option @if($order['id'] == old('order')) selected @endif value="{{$order['id']}}">#{{$order['id']}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('order')<span class="small text-danger">{{ $message }}</span>@enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label>Reporter</label>
                                         <select name="reporter" class="form-control @error('reporter')is-invalid @enderror">
                                             <option value="">- Select Reporter -</option>
@@ -105,17 +131,29 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="col-md-7">Description</th>
-                                    <th scope="col" class="col-md-3">Qty</th>
+                                    <th scope="col" class="col-md-6">Description</th>
+                                    <th scope="col" class="col-md-2">Available Qty</th>
+                                    <th scope="col" class="col-md-2">Qty For Task</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tblTaskMaterial">
                                 </tbody>
                             </table>
 
+                            <div id="warningDiv">
+                                <div class="alert alert-warning text-dark font-weight-bold" role="alert">
+                                    Some raw materials you selected are currently out of stock!
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input onclick="onClickCheckWarning()" type="checkbox" class="custom-control-input" id="checkWarning">
+                                    <label class="custom-control-label" for="checkWarning">Ignore warnings and continue</label>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="update ml-auto mr-auto">
-                                    <button type="submit" class="btn btn-primary btn-round">Save</button>
+                                    <button id="btnSave" type="submit" class="btn btn-primary btn-round">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -128,39 +166,87 @@
 
 @section('js')
     <script>
+        $('#warningDiv').hide();
+
         let tblTaskMaterialRowIndex = 0;
         const tblTaskMaterialRows = [];
         const rawMaterialsArr = @json($rawMaterialsArr)
 
-        function addTaskMaterialRow() {
-            let html = "";
-            html += '<tr id="task_material_row_' + tblTaskMaterialRowIndex + '">';
-            html += '<td>';
-            // html += '<input name="description_' + tblTaskMaterialRowIndex + '" id="description_' + tblTaskMaterialRowIndex + '" type="text" class="form-control" required>';
-            html += '<select name="raw_material[]" id="raw_material_' + tblTaskMaterialRowIndex + '" class="form-control" required>';
-            html += '<option value="">- Select Raw Material -</option>';
+            function addTaskMaterialRow() {
+                let html = "";
+                html += '<tr id="task_material_row_' + tblTaskMaterialRowIndex + '">';
+                html += '<td>';
+                // html += '<input name="description_' + tblTaskMaterialRowIndex + '" id="description_' + tblTaskMaterialRowIndex + '" type="text" class="form-control" required>';
+                html += '<select onchange="selectMaterial(' + tblTaskMaterialRowIndex + ')" name="raw_material[]" id="raw_material_' + tblTaskMaterialRowIndex + '" class="form-control" required>';
+                html += '<option value="">- Select Raw Material -</option>';
 
-            for (let i = 0; i < rawMaterialsArr.length; i++) {
-                html += `<option value="${rawMaterialsArr[i]['id']}">${rawMaterialsArr[i]['item_name']}</option>`;
+                for (let i = 0; i < rawMaterialsArr.length; i++) {
+                    html += `<option value="${rawMaterialsArr[i]['id']}">${rawMaterialsArr[i]['item_name']}</option>`;
+                }
+
+                html += '</select>';
+                html += '</td>';
+                html += '<td>';
+                html += '<input id="available_qty_' + tblTaskMaterialRowIndex + '" readonly class="form-control">';
+                html += '</td>';
+                html += '<td>';
+                html += '<input onchange="taskQtyValidate(' + tblTaskMaterialRowIndex + ')"" name="qty[]" id="qty_' + tblTaskMaterialRowIndex + '" type="number" step=".01" class="form-control" required>';
+                html += '</td>';
+                html += '<td class="text-right">'
+                html += '<button onclick="removeTaskTblRow(' + tblTaskMaterialRowIndex + ')" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>'
+                html += '</td>';
+                html += '</tr>';
+
+                $('#tblTaskMaterial').append(html);
+                tblTaskMaterialRowIndex++;
             }
-
-            html += '</select>';
-            html += '</td>';
-            html += '<td>';
-            html += '<input name="qty[]" id="qty_' + tblTaskMaterialRowIndex + '" type="number" step=".01" class="form-control" required>';
-            html += '</td>';
-            html += '<td class="text-right">'
-            html += '<button onclick="removeTaskTblRow(' + tblTaskMaterialRowIndex + ')" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>'
-            html += '</td>';
-            html += '</tr>';
-
-            $('#tblTaskMaterial').append(html);
-            tblTaskMaterialRowIndex++;
-        }
 
         function removeTaskTblRow(id) {
             const row_id = '#task_material_row_' + id;
             $(row_id).remove();
         }
+
+        function selectMaterial(id) {
+            const inputRawMaterialId = '#raw_material_' + id;
+            const inputAvailableQtyId = '#available_qty_' + id;
+
+            const rawMaterialId = $(inputRawMaterialId).val();
+
+            $.ajax({
+                url: BASE + '/util/get-raw-material/' + rawMaterialId,
+                method: "get",
+            }).done(function (resp) {
+                $(inputAvailableQtyId).val(resp['qty']);
+            });
+        }
+
+        function taskQtyValidate(id){
+            const inputTaskQtyId = '#qty_' + id;
+            const inputAvailableQtyId = '#available_qty_' + id;
+
+            const taskQty = Number($(inputTaskQtyId).val());
+            const availableQty = Number($(inputAvailableQtyId).val());
+
+            const difference = availableQty - taskQty;
+
+            if (difference < 1){
+                $('#warningDiv').show();
+                $('#btnSave').hide();
+            }else{
+                $('#warningDiv').hide();
+                $('#btnSave').show();
+            }
+        }
+
+        function onClickCheckWarning(){
+            const isChecked = $('#checkWarning').is(':checked');
+
+            if(isChecked){
+                $('#btnSave').show();
+            }else{
+                $('#btnSave').hide();
+            }
+        }
+
     </script>
 @endsection

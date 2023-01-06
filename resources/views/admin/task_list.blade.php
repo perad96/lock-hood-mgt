@@ -12,7 +12,7 @@
                     <div class="card-header">
                         <h5 class="card-title d-flex align-items-center mt-0">
                             <span class="">Tasks List</span>
-{{--                            <a href="{{url('admin/tasks/export')}}" class="btn btn-warning ml-auto m-0"><i class="fa fa-file-excel-o mr-2"></i>Export</a>--}}
+                            {{--                            <a href="{{url('admin/tasks/export')}}" class="btn btn-warning ml-auto m-0"><i class="fa fa-file-excel-o mr-2"></i>Export</a>--}}
                         </h5>
                     </div>
                     <div class="card-body">
@@ -38,10 +38,12 @@
                                         @if($obj['status'] == 'HOLD') <h5 class="mb-0"><span class="badge badge-info w-100">Hold</span></h5>@endif
                                         @if($obj['status'] == 'COMPLETED') <h5 class="mb-0"><span class="badge badge-success w-100">Completed</span></h5>@endif
                                     </td>
-{{--                                    <td class="text-right">--}}
-{{--                                        <a href="{{url('admin/tasks/info/'.$obj['id'])}}" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>--}}
-{{--                                        <a href="{{url('admin/tasks/delete/'.$obj['id'])}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>--}}
-{{--                                    </td>--}}
+                                    <td class="text-right">
+                                        <a href="{{url('admin/tasks/info/'.$obj['id'])}}" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>
+                                        @if($obj['status'] != 'COMPLETED')
+                                            <a href="{{url('admin/tasks/delete/'.$obj['id'])}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
