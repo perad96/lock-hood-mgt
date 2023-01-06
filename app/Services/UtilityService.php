@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\JobRole;
 use App\Models\MaterialBrand;
 use App\Models\MaterialCategory;
+use App\Models\RawMaterial;
 use App\Models\Section;
 use App\Models\Unit;
 
@@ -65,6 +66,24 @@ class UtilityService
     public function getAllCustomers()
     {
         return Customer::all();
+    }
+
+    public function getRawMaterialById($id)
+    {
+        return RawMaterial::find($id);
+    }
+
+    public function getAllTaskTypes()
+    {
+        return ['CUSTOM', 'MASTER'];
+    }
+
+    public function getAllYears()
+    {
+        $year = date('Y');
+        $minusArr = range($year-10, $year);
+        $plusArr = range($year+1, $year+10);
+        return array_merge($minusArr, $plusArr);
     }
 
 }

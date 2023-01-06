@@ -99,7 +99,58 @@
                             </div>
 
                             <div id="divProductOrder" style="display: none">
-                                <h5>Under construction... </h5>
+                                <h5 class="text-muted mb-0 font-weight-bold">Products</h5>
+                                <hr class="ml-0 mr-0">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table id="example" class="display" style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="col-1">Product ID</th>
+                                                <th class="col-6">Name</th>
+                                                <th class="col-3">Unit Price</th>
+                                                <th class="col-2">Available Qty</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($productsArr as $product)
+                                                <tr>
+                                                    <td>{{$product['id']}}</td>
+                                                    <td>{{$product['name']}}</td>
+                                                    <td>{{$product['unit_price']}}</td>
+                                                    <td>{{$product['qty']}}</td>
+                                                </tr>
+                                            @endforeach
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <div class="form-group mb-1">
+                                                    <label>Qty</label>
+                                                    <input id="typeTwoProductTitle" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-1">
+                                                    <label>Qty</label>
+                                                    <input id="typeTwoQty" type="number" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row flex-row-reverse">
+                                            <div class="col-md-3">
+                                                <button onclick="addItemToOrder()" type="button" class="btn btn-sm btn-info btn-block"><i class="fa fa-plus"></i> Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
                             </div>
 
 
@@ -148,5 +199,28 @@
 
             $('#customSubTotal').val(subTotal);
         }
+
+        $(document).ready(function () {
+            // $('#example').DataTable();
+
+            let table = $('#example').DataTable();
+
+            $('#example tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                } else {
+                    const rowData = table.row(this).data();
+                    console.log(rowData);
+                    $('#typeTwoProductTitle').val(rowData[1]);
+
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+            });
+
+            // $('#button').click(function () {
+            //     table.row('.selected').remove().draw(false);
+            // });
+        });
     </script>
 @endsection

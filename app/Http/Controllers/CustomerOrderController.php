@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\CustomerOrdersExport;
 use App\Models\CustomerOrder;
 use App\Models\CustomerOrderDetail;
+use App\Models\Product;
 use App\Services\UtilityService;
 use App\Traits\Messages;
 use Illuminate\Http\Request;
@@ -48,6 +49,7 @@ class CustomerOrderController extends Controller
     public function addView(Request $request)
     {
         try{
+            $this->resources['productsArr'] = Product::all();
             return view('admin.customer_order_add')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());

@@ -28,6 +28,7 @@ class TaskController extends Controller
 
         $this->resources['page_title'] = 'Manage tasks';
         $this->resources['statusArr'] = $this->utilityService->getAllTaskStatus();
+        $this->resources['taskTypesArr'] = $this->utilityService->getAllTaskTypes();
     }
 
 

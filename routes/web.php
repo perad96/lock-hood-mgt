@@ -100,6 +100,15 @@ Route::group(['middleware' => ['role:ADMIN']], function () {
             Route::get('export', [\App\Http\Controllers\TaskController::class,'export']);
         });
 
+        // Reports.
+        Route::prefix('reports')->group(function () {
+            Route::get('export-income', [\App\Http\Controllers\Admin\ReportsController::class,'incomeExport']);
+            Route::get('export-task', [\App\Http\Controllers\Admin\ReportsController::class,'taskExport']);
+            Route::get('view-income', [\App\Http\Controllers\Admin\ReportsController::class,'incomeView']);
+            Route::get('view-task', [\App\Http\Controllers\Admin\ReportsController::class,'taskView']);
+            Route::get('all', [\App\Http\Controllers\Admin\ReportsController::class,'index']);
+        });
+
         Route::get('', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
     });
 });
@@ -108,6 +117,7 @@ Route::group(['middleware' => ['role:ADMIN']], function () {
 Route::prefix('util')->group(function () {
     Route::get('get-job-roles-by-section/{id}', [\App\Http\Controllers\UtilityController::class,'getJobRolesBySectionId']);
     Route::get('get-all-customers', [\App\Http\Controllers\UtilityController::class,'getAllCustomers']);
+    Route::get('get-raw-material/{id}', [\App\Http\Controllers\UtilityController::class,'getRawMaterialById']);
 });
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -26,4 +26,9 @@ class UtilityController extends Controller
         return $this->utilityService->getAllCustomers();
     }
 
+    public function getRawMaterialById(Request $request)
+    {
+        return $this->utilityService->getRawMaterialById($request->id);
+    }
+
 }
