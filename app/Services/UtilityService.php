@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Customer;
 use App\Models\JobRole;
+use App\Models\ListedTask;
+use App\Models\ListedTaskMaterial;
 use App\Models\MaterialBrand;
 use App\Models\MaterialCategory;
 use App\Models\RawMaterial;
@@ -71,6 +73,11 @@ class UtilityService
     public function getRawMaterialById($id)
     {
         return RawMaterial::find($id);
+    }
+
+    public function getRawMaterialsByListedTask($id)
+    {
+        return ListedTaskMaterial::with('rawMaterial')->where('listed_task_id', $id)->get();
     }
 
     public function getAllTaskTypes()

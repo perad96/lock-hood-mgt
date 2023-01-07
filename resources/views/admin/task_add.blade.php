@@ -17,7 +17,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Task Type</label>
-                                        <select name="type" class="form-control @error('type')is-invalid @enderror">
+                                        <select onchange="onchangeTaskType()" id="selectTaskType" name="type" class="form-control @error('type')is-invalid @enderror">
                                             <option value="">- Select Task Type -</option>
                                             @foreach($taskTypesArr as $type)
                                                 <option @if($type == old('type')) selected @endif value="{{$type}}">{{$type}}</option>
@@ -36,6 +36,18 @@
                                             @endforeach
                                         </select>
                                         @error('order')<span class="small text-danger">{{ $message }}</span>@enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 masterTask">
+                                    <div class="form-group">
+                                        <label>Master Tasks List</label>
+                                        <select id="listed_task" onchange="onchangeTaskList()" name="listed_task" class="form-control @error('listed_task')is-invalid @enderror">
+                                            <option value="">- Select Task -</option>
+                                            @foreach($listedTasksArr as $task)
+                                                <option @if($task['id'] == old('listed_task')) selected @endif value="{{$task['id']}}">{{$task['title']}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('listed_task')<span class="small text-danger">{{ $message }}</span>@enderror
                                     </div>
                                 </div>
                             </div>
@@ -127,12 +139,12 @@
                             </div>
 
                             <small class="text-muted font-weight-bold">Task Raw Materials</small>
-                            <button onclick="addTaskMaterialRow()" type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></button>
+                            <button onclick="addTaskMaterialRow()" type="button" class="btn btn-sm btn-primary customTask"><i class="fa fa-plus"></i></button>
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th scope="col" class="col-md-6">Description</th>
-                                    <th scope="col" class="col-md-2">Available Qty</th>
+                                    <th scope="col" class="col-md-2 customTask">Available Qty</th>
                                     <th scope="col" class="col-md-2">Qty For Task</th>
                                 </tr>
                                 </thead>
@@ -167,6 +179,8 @@
 @section('js')
     <script>
         $('#warningDiv').hide();
+        $('.masterTask').hide();
+        $('.customTask').show();
 
         let tblTaskMaterialRowIndex = 0;
         const tblTaskMaterialRows = [];
@@ -248,5 +262,46 @@
             }
         }
 
+
+        function onchangeTaskType(){
+            $('.masterTask').hide();
+            $('.customTask').show();
+
+            const taskType = $('#selectTaskType').val();
+
+            if(taskType === 'CUSTOM'){
+                $('.masterTask').hide();
+                $('.customTask').show();
+            }
+            if(taskType === 'MASTER'){
+                $('.masterTask').show();
+                $('.customTask').hide();
+            }
+        }
+
+        function onchangeTaskList() {
+            const listedTaskId = $('#listed_task').val();
+
+            $.ajax({
+                url: BASE + '/util/get-material-by-listed-task/' + listedTaskId,
+                method: "get",
+            }).done(function (resp) {
+
+                for (let i = 0; i < resp.length; i++){
+                    let html = "";
+                    html += '<tr>';
+                    html += '<td>';
+                    html += '<input hidden name="raw_material[]" value="'+resp[i]['material_id']+'" type="text" class="form-control">';
+                    html += '<input value="'+resp[i]['raw_material']['item_name']+'" type="text" class="form-control" readonly>';
+                    html += '</td>';
+                    html += '<td>';
+                    html += '<input name="qty[]" value="'+resp[i]['qty']+'" class="form-control" readonly>';
+                    html += '</td>';
+                    html += '</tr>';
+
+                    $('#tblTaskMaterial').append(html);
+                }
+            });
+        }
     </script>
 @endsection

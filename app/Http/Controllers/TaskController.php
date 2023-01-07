@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\TasksExport;
 use App\Models\CustomerOrder;
 use App\Models\Employee;
+use App\Models\ListedTask;
 use App\Models\RawMaterial;
 use App\Models\Task;
 use App\Models\TaskMaterial;
@@ -53,6 +54,7 @@ class TaskController extends Controller
             $this->resources['reporterArr'] = Employee::all();
             $this->resources['assigneeArr'] = Employee::all();
             $this->resources['rawMaterialsArr'] = RawMaterial::orderBy('item_name')->get();
+            $this->resources['listedTasksArr'] = ListedTask::orderBy('title')->get();
             $this->resources['ordersArr'] = CustomerOrder::where('status', 'PENDING')->orderByDesc('id')->get();
 
             return view('admin.task_add')->with($this->resources);
@@ -102,7 +104,8 @@ class TaskController extends Controller
                     'finished_at' => (isset($requestParams['end_date'])) ? date('Y-m-d h:i:s', strtotime($requestParams['end_date'])) : null,
                     'spend_hours' => $requestParams['spend_hours'],
                     'spend_minutes' => $requestParams['spend_minutes'],
-                    'status' => (isset($requestParams['status'])) ? $requestParams['status'] : 'PENDING'
+                    'status' => (isset($requestParams['status'])) ? $requestParams['status'] : 'PENDING',
+                    'master_task_id' => (isset($requestParams['listed_task'])) ? $requestParams['listed_task'] : null
                 ]);
 
                 if (count($requestParams['raw_material']) > 0){
@@ -138,26 +141,46 @@ class TaskController extends Controller
 
             if (!$validator->fails()) {
 
+                $dataArr = [];
+
+                if(isset($requestParams['reporter'])){
+                    $dataArr['reporter_id'] = $requestParams['reporter'];
+                }
+                if(isset($requestParams['assignee'])){
+                    $dataArr['assignee_id'] = $requestParams['assignee'];
+                }
+                if(isset($requestParams['description'])){
+                    $dataArr['description'] = $requestParams['description'];
+                }
+                if(isset($requestParams['due_date'])){
+                    $dataArr['due_date'] = $requestParams['due_date'];
+                }
+                if(isset($requestParams['start_date'])){
+                    $dataArr['started_at'] = date('Y-m-d h:i:s', strtotime($requestParams['start_date']));
+                }
+                if(isset($requestParams['end_date'])){
+                    $dataArr['finished_at'] = date('Y-m-d h:i:s', strtotime($requestParams['end_date']));
+                }
+                if(isset($requestParams['spend_hours'])){
+                    $dataArr['spend_hours'] = $requestParams['spend_hours'];
+                }
+                if(isset($requestParams['spend_minutes'])){
+                    $dataArr['spend_minutes'] = $requestParams['spend_minutes'];
+                }
+                if(isset($requestParams['status'])){
+                    $dataArr['status'] = $requestParams['status'];
+                }
+
                 DB::beginTransaction();
-                Task::find($requestParams['id'])->update([
-                    'reporter_id' => $requestParams['reporter'],
-                    'assignee_id' => $requestParams['assignee'],
-                    'description' => $requestParams['description'],
-                    'due_date' => $requestParams['due_date'],
-                    'started_at' => (isset($requestParams['start_date'])) ? date('Y-m-d h:i:s', strtotime($requestParams['start_date'])) : null,
-                    'finished_at' => (isset($requestParams['end_date'])) ? date('Y-m-d h:i:s', strtotime($requestParams['end_date'])) : null,
-                    'spend_hours' => $requestParams['spend_hours'],
-                    'spend_minutes' => $requestParams['spend_minutes'],
-                    'status' => (isset($requestParams['status'])) ? $requestParams['status'] : 'PENDING'
-                ]);
+                Task::find($requestParams['id'])->update($dataArr);
 
                 if ($requestParams['status'] == 'COMPLETED'){
                     $task = Task::with('taskMaterials.rawMaterial')->find($requestParams['id']);
                     if(count($task['taskMaterials']) > 0){
-                      foreach ($task['taskMaterials'] as $material){
-                          $newQty = $material['rawMaterial']['qty'] - $material['qty'];
-                          RawMaterial::find($material['material_id'])->update(['qty' => $newQty]);
-                      }
+                        foreach ($task['taskMaterials'] as $material){
+                            $newQty = $material['rawMaterial']['qty'] - $material['qty'];
+                            RawMaterial::find($material['material_id'])->update(['qty' => $newQty]);
+                        }
                     }
                 }
 
@@ -169,6 +192,7 @@ class TaskController extends Controller
             }
         }catch (\Exception $e){
             DB::rollBack();
+            dd($e->getMessage(), $e->getLine());
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
         }

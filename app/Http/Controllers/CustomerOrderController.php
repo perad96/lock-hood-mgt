@@ -114,9 +114,6 @@ class CustomerOrderController extends Controller
             }
 
             if ($requestParams['order_type'] == 'EXISTING_PRODUCT'){
-                $this->resources['common_msg'] = $this->dangerWithMessage('Under construction!');
-                return redirect()->back()->with($this->resources)->withInput($request->all());
-
                 $validator = Validator::make($requestParams, [
                     'order_type' => ['required'],
                     'customer' => ['required'],
@@ -131,21 +128,26 @@ class CustomerOrderController extends Controller
                         'customer_id' => $requestParams['customer'],
                         'order_type' => $requestParams['order_type'],
                         'description' => $requestParams['description'],
-                        'order_date' => date('Y-m-d'),
-                        'due_date' => date('Y-m-d', strtotime($requestParams['due_date'])),
+                        'order_date' => $requestParams['order_date'],
+                        'due_date' => $requestParams['due_date'],
                         'discount_percentage' => $requestParams['discount_percentage'],
                         'sub_total' => $requestParams['sub_total'],
                         'delivery_fee' => $requestParams['delivery_fee'],
                         'status' => 'PENDING'
                     ]);
 
-                    foreach ($requestParams['orderDetails'] as $orderDetail){
+                    foreach ($requestParams['product_id'] as $key => $productId){
+                        $product = Product::find($productId);
+
                         CustomerOrderDetail::create([
                             'order_id' => $order['id'],
-                            'product_id' => $orderDetail['product_id'],
-                            'qty' => $orderDetail['qty'],
-                            'unit_price' => $orderDetail['unit_price']
+                            'product_id' => $productId,
+                            'qty' => $requestParams['qty'][$key],
+                            'unit_price' => $product['unit_price']
                         ]);
+
+                        $newQty = $product['qty'] - $requestParams['qty'][$key];
+                        Product::find($productId)->update(['qty' => $newQty]);
                     }
 
                     DB::commit();
@@ -157,7 +159,6 @@ class CustomerOrderController extends Controller
             }
         }catch (\Exception $e){
             DB::rollBack();
-            dd($e->getMessage());
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
         }
@@ -213,10 +214,8 @@ class CustomerOrderController extends Controller
     public function export(Request $request)
     {
         try {
-            $allArr = CustomerOrder::all();
-
+            $allArr = CustomerOrder::with('customer')->get();
             return Excel::download(new CustomerOrdersExport($allArr), 'customer_orders.xlsx');
-
         } catch (\Exception $e) {
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);

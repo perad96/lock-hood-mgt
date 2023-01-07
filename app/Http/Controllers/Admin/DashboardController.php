@@ -16,9 +16,15 @@ class DashboardController extends Controller
     public function index()
     {
         try{
+            $year = date('Y');
             $month = date('Y');
-            $this->resources['monthOrdersTotalCount'] = CustomerOrder::whereMonth('order_date', $month)->count();
-            $this->resources['monthOrdersCompleteCount'] = CustomerOrder::whereMonth('order_date', $month)->where('status', 'COMPLETE')->count();
+
+            $this->resources['monthOrdersTotalCount'] = CustomerOrder::whereMonth('order_date', $month)
+                ->whereYear('order_date', $year)->count();
+
+            $this->resources['monthOrdersCompleteCount'] = CustomerOrder::whereMonth('order_date', $month)
+                ->whereYear('order_date', $year)->where('status', 'COMPLETE')->count();
+
             $this->resources['pendingOrdersCount'] = CustomerOrder::where('status', 'PENDING')->count();
             $this->resources['totalCustomersCount'] = Customer::count();
 
