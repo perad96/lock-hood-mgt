@@ -81,7 +81,7 @@
                                 <input name="assignee" value="{{$obj['assignee_id']}}" type="hidden">
                                 <input name="description" value="{{$obj['description']}}" type="hidden">
                                 <input name="due_date" value="{{$obj['due_date']}}" type="hidden">
-                                <input name="start_date" value="{{$obj['start_date']}}" type="hidden">
+{{--                                <input name="start_date" value="{{$obj['start_date']}}" type="hidden">--}}
 
                                 <div class="form-group">
                                     <label>Task Status</label>
@@ -92,6 +92,11 @@
                                         @endforeach
                                     </select>
                                     @error('status')<span class="small text-danger">{{ $message }}</span>@enderror
+                                </div>
+                                <div class="form-group">
+                                    <label>Start At</label>
+                                    <input name="start_date" value="{{(old('start_date') !== null) ? old('start_date') : $obj['started_at'] }}" type="datetime-local" class="form-control @error('start_date')is-invalid @enderror">
+                                    @error('start_date')<span class="small text-danger">{{ $message }}</span>@enderror
                                 </div>
                                 <div class="form-group">
                                     <label>Finished At</label>

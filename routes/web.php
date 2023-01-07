@@ -104,8 +104,16 @@ Route::group(['middleware' => ['role:ADMIN']], function () {
         Route::prefix('reports')->group(function () {
             Route::get('export-income', [\App\Http\Controllers\Admin\ReportsController::class,'incomeExport']);
             Route::get('export-task', [\App\Http\Controllers\Admin\ReportsController::class,'taskExport']);
+            Route::get('export-top-selling-product', [\App\Http\Controllers\Admin\ReportsController::class,'topSellingProductExport']);
+            Route::get('export-most-wanted-material', [\App\Http\Controllers\Admin\ReportsController::class,'mostWantedMaterialExport']);
+            Route::get('export-order-delivery-cost', [\App\Http\Controllers\Admin\ReportsController::class,'orderDeliveryCostExport']);
+
             Route::get('view-income', [\App\Http\Controllers\Admin\ReportsController::class,'incomeView']);
             Route::get('view-task', [\App\Http\Controllers\Admin\ReportsController::class,'taskView']);
+            Route::get('view-top-selling-product', [\App\Http\Controllers\Admin\ReportsController::class,'topSellingProductView']);
+            Route::get('view-most-wanted-material', [\App\Http\Controllers\Admin\ReportsController::class,'mostWantedMaterialView']);
+            Route::get('view-order-delivery-cost', [\App\Http\Controllers\Admin\ReportsController::class,'orderDeliveryCostView']);
+
             Route::get('all', [\App\Http\Controllers\Admin\ReportsController::class,'index']);
         });
 
@@ -118,6 +126,9 @@ Route::prefix('util')->group(function () {
     Route::get('get-job-roles-by-section/{id}', [\App\Http\Controllers\UtilityController::class,'getJobRolesBySectionId']);
     Route::get('get-all-customers', [\App\Http\Controllers\UtilityController::class,'getAllCustomers']);
     Route::get('get-raw-material/{id}', [\App\Http\Controllers\UtilityController::class,'getRawMaterialById']);
+    Route::get('get-material-by-listed-task/{id}', [\App\Http\Controllers\UtilityController::class,'getRawMaterialsByListedTask']);
+    Route::get('get-all-tasks-calender', [\App\Http\Controllers\UtilityController::class,'getAllTasks']);
+    Route::get('get-all-orders-calender', [\App\Http\Controllers\UtilityController::class,'getAllOrders']);
 });
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
