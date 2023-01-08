@@ -37,8 +37,10 @@ class RedirectIfAuthenticated
                     return redirect('/finance');
                 case 'HR':
                     return redirect('/hr');
-                case 'CUSTOMER':
-                    return redirect('/customer');
+                case 'WORKER':
+                    return redirect('/worker');
+                case 'SUPERVISOR':
+                    return redirect('/supervisor');
                 default:
                     return redirect('/login');
             }

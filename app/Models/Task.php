@@ -25,6 +25,11 @@ class Task extends Model
         return $this->belongsTo(Employee::class,'assignee_id');
     }
 
+    public function masterTask(): BelongsTo
+    {
+        return $this->belongsTo(ListedTask::class,'master_task_id');
+    }
+
     public function taskMaterials(): HasMany
     {
         return $this->hasMany(TaskMaterial::class,'task_id');

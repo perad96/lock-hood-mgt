@@ -32,7 +32,7 @@ class UtilityService
 
     public function getAllUserRoles(): array
     {
-        return ['ADMIN', 'SALES', 'FINANCE', 'HR', 'CUSTOMER'];
+        return ['ADMIN', 'SALES', 'FINANCE', 'HR', 'SUPERVISOR', 'WORKER'];
     }
 
     public function getAllGenders(): array

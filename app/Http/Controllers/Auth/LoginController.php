@@ -35,8 +35,10 @@ class LoginController extends Controller
                 return '/finance';
             case 'HR':
                 return '/hr';
-            case 'CUSTOMER':
-                return '/customer';
+            case 'WORKER':
+                return '/worker';
+            case 'SUPERVISOR':
+                return '/supervisor';
             default:
                 return '/login';
         }

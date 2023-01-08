@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Supervisor;
 
 use App\Exports\IncomeExport;
-use App\Exports\MostIssuedTaskExport;
 use App\Exports\MostWantedMaterialExport;
 use App\Exports\OrderDeliveryCostExport;
 use App\Exports\TasksExport;
@@ -40,7 +39,7 @@ class ReportsController extends Controller
     public function index(Request $request)
     {
         try{
-            return view('admin.report_index')->with($this->resources);
+            return view('supervisor.report_index')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -62,7 +61,7 @@ class ReportsController extends Controller
             $this->resources['allArr'] = $result;
             $this->resources['data'] = $data;
 
-            return view('admin.report_income')->with($this->resources);
+            return view('supervisor.report_income')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -84,7 +83,7 @@ class ReportsController extends Controller
             $this->resources['allArr'] = $result;
             $this->resources['data'] = $data;
 
-            return view('admin.report_task')->with($this->resources);
+            return view('supervisor.report_task')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -106,7 +105,7 @@ class ReportsController extends Controller
             $this->resources['allArr'] = $result;
             $this->resources['data'] = $data;
 
-            return view('admin.report_top_selling_product')->with($this->resources);
+            return view('supervisor.report_top_selling_product')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -128,7 +127,7 @@ class ReportsController extends Controller
             $this->resources['allArr'] = $result;
             $this->resources['data'] = $data;
 
-            return view('admin.report_most_wanted_material')->with($this->resources);
+            return view('supervisor.report_most_wanted_material')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -151,29 +150,7 @@ class ReportsController extends Controller
             $this->resources['allArr'] = $result;
             $this->resources['data'] = $data;
 
-            return view('admin.report_order_delivery_cost')->with($this->resources);
-        }catch (\Exception $e){
-            $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
-            return redirect()->back()->with($this->resources);
-        }
-    }
-
-    public function mostIssuedTaskView(Request $request)
-    {
-        try{
-            $data = $request->all();
-
-            $result = [];
-            if (isset($data['month'])){
-                $year = date('Y', strtotime($data['month']));
-                $month = date('m', strtotime($data['month']));
-                $result = $this->getMostIssuedTaskData($year, $month);
-            }
-
-            $this->resources['allArr'] = $result;
-            $this->resources['data'] = $data;
-
-            return view('admin.report_most_issued_task')->with($this->resources);
+            return view('supervisor.report_order_delivery_cost')->with($this->resources);
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
             return redirect()->back()->with($this->resources);
@@ -258,23 +235,6 @@ class ReportsController extends Controller
             $allArr = $this->getOrderDeliveryCostData($year, $month);
 
             return Excel::download(new OrderDeliveryCostExport($allArr), 'order_delivery_cost_report.xlsx');
-
-        }catch (\Exception $e){
-            $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
-            return redirect()->back()->with($this->resources);
-        }
-    }
-
-    public function mostIssuedTaskExport(Request $request)
-    {
-        try{
-            $data = $request->all();
-
-            $year = date('Y', strtotime($data['month']));
-            $month = date('m', strtotime($data['month']));
-            $allArr = $this->getMostIssuedTaskData($year, $month);
-
-            return Excel::download(new MostIssuedTaskExport($allArr), 'most_issued_task_report.xlsx');
 
         }catch (\Exception $e){
             $this->resources['common_msg'] = $this->dangerWithMessage($e->getMessage());
@@ -385,30 +345,6 @@ class ReportsController extends Controller
             $obj['date'] = $data['new_date'];
             $obj['order_count'] = $data['order_count'];
             $obj['delivery_fee_sum'] = $data['delivery_fee_sum'];
-            $resp[] = $obj;
-        }
-
-        return $resp;
-    }
-
-
-    protected function getMostIssuedTaskData($year, $month){
-        $result = Task::selectRaw(
-            'DATE(created_at) as new_date, master_task_id,
-            COUNT(id) as task_count'
-        )
-            ->with('masterTask')
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year)
-            ->whereNotNull('master_task_id')
-            ->groupBy('new_date', 'master_task_id')->get();
-
-        $resp = [];
-        foreach ($result as $data){
-            $obj = [];
-            $obj['date'] = $data['new_date'];
-            $obj['task'] = $data['masterTask']['title'];
-            $obj['task_count'] = $data['task_count'];
             $resp[] = $obj;
         }
 

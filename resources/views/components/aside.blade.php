@@ -14,18 +14,6 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-                {{--                <li class="{{ (request()->is('admin/courses/*')) ? 'active' : '' }}">--}}
-                {{--                    <a href="{{url('admin/courses/all')}}">--}}
-                {{--                        <i class="nc-icon nc-trophy"></i>--}}
-                {{--                        <p>Courses</p>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
-                {{--                <li class="{{ (request()->is('admin/lecturers/*'))  ? 'active' : '' }}">--}}
-                {{--                    <a href="{{url('admin/lecturers/all')}}">--}}
-                {{--                        <i class="nc-icon nc-single-02"></i>--}}
-                {{--                        <p>Lecturers</p>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
                 <li class="{{ (request()->is('admin/customer-orders/*'))  ? 'active' : '' }}">
                     <a href="{{url('admin/customer-orders/all')}}">
                         <i class="nc-icon nc-single-copy-04"></i>
@@ -72,6 +60,25 @@
                     <a href="{{url('admin/system-users/all')}}">
                         <i class="nc-icon nc-circle-10"></i>
                         <p>Users</p>
+                    </a>
+                </li>
+                @elseif(Auth::user()->role === 'SUPERVISOR')
+                <li class="{{ (request()->is('supervisor')) ? 'active' : '' }}">
+                    <a href="{{url('supervisor')}}">
+                        <i class="nc-icon nc-bank"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                <li class="{{ (request()->is('supervisor/tasks/*'))  ? 'active' : '' }}">
+                    <a href="{{url('supervisor/tasks/all')}}">
+                        <i class="nc-icon nc-ruler-pencil"></i>
+                        <p>Tasks</p>
+                    </a>
+                </li>
+                <li class="{{ (request()->is('supervisor/reports/*'))  ? 'active' : '' }}">
+                    <a href="{{url('supervisor/reports/all')}}">
+                        <i class="nc-icon nc-chart-bar-32"></i>
+                        <p>Reports</p>
                     </a>
                 </li>
             @elseif(Auth::user()->role === 'FINANCE')
