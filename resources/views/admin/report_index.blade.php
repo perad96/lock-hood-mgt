@@ -55,7 +55,7 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <a href="{{url('admin/reports/view-employee-work-hours')}}">
+                <a href="{{url('admin/reports/view-most-issued-task')}}">
                     <div class="text-light shadow card card-body text-center w-100 font-weight-bold">
                         Most Issued Tasks
                     </div>

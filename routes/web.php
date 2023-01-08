@@ -107,17 +107,56 @@ Route::group(['middleware' => ['role:ADMIN']], function () {
             Route::get('export-top-selling-product', [\App\Http\Controllers\Admin\ReportsController::class,'topSellingProductExport']);
             Route::get('export-most-wanted-material', [\App\Http\Controllers\Admin\ReportsController::class,'mostWantedMaterialExport']);
             Route::get('export-order-delivery-cost', [\App\Http\Controllers\Admin\ReportsController::class,'orderDeliveryCostExport']);
+            Route::get('export-most-issued-task', [\App\Http\Controllers\Admin\ReportsController::class,'mostIssuedTaskExport']);
 
             Route::get('view-income', [\App\Http\Controllers\Admin\ReportsController::class,'incomeView']);
             Route::get('view-task', [\App\Http\Controllers\Admin\ReportsController::class,'taskView']);
             Route::get('view-top-selling-product', [\App\Http\Controllers\Admin\ReportsController::class,'topSellingProductView']);
             Route::get('view-most-wanted-material', [\App\Http\Controllers\Admin\ReportsController::class,'mostWantedMaterialView']);
             Route::get('view-order-delivery-cost', [\App\Http\Controllers\Admin\ReportsController::class,'orderDeliveryCostView']);
+            Route::get('view-most-issued-task', [\App\Http\Controllers\Admin\ReportsController::class,'mostIssuedTaskView']);
 
             Route::get('all', [\App\Http\Controllers\Admin\ReportsController::class,'index']);
         });
 
         Route::get('', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
+    });
+});
+
+
+// Supervisor routes.
+Route::group(['middleware' => ['role:SUPERVISOR']], function () {
+    Route::prefix('supervisor')->group(function () {
+
+        // Manage tasks.
+        Route::prefix('tasks')->group(function () {
+            Route::post('add', [\App\Http\Controllers\Supervisor\TaskController::class,'add'])->name('task-add-supervisor');
+            Route::post('update', [\App\Http\Controllers\Supervisor\TaskController::class,'update'])->name('task-update-supervisor');
+            Route::get('add', [\App\Http\Controllers\Supervisor\TaskController::class,'addView']);
+            Route::get('delete/{id}', [\App\Http\Controllers\Supervisor\TaskController::class,'delete']);
+            Route::get('info/{id}', [\App\Http\Controllers\Supervisor\TaskController::class,'infoView']);
+            Route::get('all', [\App\Http\Controllers\Supervisor\TaskController::class,'allView']);
+            Route::get('export', [\App\Http\Controllers\Supervisor\TaskController::class,'export']);
+        });
+
+        // Reports.
+        Route::prefix('reports')->group(function () {
+            Route::get('export-income', [\App\Http\Controllers\Supervisor\ReportsController::class,'incomeExport']);
+            Route::get('export-task', [\App\Http\Controllers\Supervisor\ReportsController::class,'taskExport']);
+            Route::get('export-top-selling-product', [\App\Http\Controllers\Supervisor\ReportsController::class,'topSellingProductExport']);
+            Route::get('export-most-wanted-material', [\App\Http\Controllers\Supervisor\ReportsController::class,'mostWantedMaterialExport']);
+            Route::get('export-order-delivery-cost', [\App\Http\Controllers\Supervisor\ReportsController::class,'orderDeliveryCostExport']);
+
+            Route::get('view-income', [\App\Http\Controllers\Supervisor\ReportsController::class,'incomeView']);
+            Route::get('view-task', [\App\Http\Controllers\Supervisor\ReportsController::class,'taskView']);
+            Route::get('view-top-selling-product', [\App\Http\Controllers\Supervisor\ReportsController::class,'topSellingProductView']);
+            Route::get('view-most-wanted-material', [\App\Http\Controllers\Supervisor\ReportsController::class,'mostWantedMaterialView']);
+            Route::get('view-order-delivery-cost', [\App\Http\Controllers\Supervisor\ReportsController::class,'orderDeliveryCostView']);
+
+            Route::get('all', [\App\Http\Controllers\Supervisor\ReportsController::class,'index']);
+        });
+
+        Route::get('', [\App\Http\Controllers\Supervisor\DashboardController::class, 'index']);
     });
 });
 
@@ -128,6 +167,7 @@ Route::prefix('util')->group(function () {
     Route::get('get-raw-material/{id}', [\App\Http\Controllers\UtilityController::class,'getRawMaterialById']);
     Route::get('get-material-by-listed-task/{id}', [\App\Http\Controllers\UtilityController::class,'getRawMaterialsByListedTask']);
     Route::get('get-all-tasks-calender', [\App\Http\Controllers\UtilityController::class,'getAllTasks']);
+    Route::get('get-all-tasks-calender-supervisor', [\App\Http\Controllers\UtilityController::class,'getAllTasksSupervisor']);
     Route::get('get-all-orders-calender', [\App\Http\Controllers\UtilityController::class,'getAllOrders']);
 });
 

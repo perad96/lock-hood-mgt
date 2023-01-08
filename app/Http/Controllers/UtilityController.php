@@ -45,6 +45,22 @@ class UtilityController extends Controller
         return $this->processData($allArr);
     }
 
+    public function getAllTasksSupervisor(Request $request)
+    {
+        $allArr = Task::all();
+        $respArr = [];
+
+        foreach ($allArr as $data){
+            $tmp = [];
+            $tmp['title'] = '#'.$data['id'];
+            $tmp['start'] = date('Y-m-d', strtotime($data['due_date'])).'T'.'00:00:00';
+            $tmp['url'] = url('supervisor/tasks/info/'.$data['id']);
+            $respArr[] = $tmp;
+        }
+
+        return $respArr;
+    }
+
     public function getAllOrders(Request $request)
     {
         $allArr = CustomerOrder::all();
